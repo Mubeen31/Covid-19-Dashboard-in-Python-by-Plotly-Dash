@@ -41,6 +41,10 @@ covid_data_1 = covid_data.groupby(['date'])[['confirmed', 'death', 'recovered', 
 
 covid_data_2 = covid_data.groupby(['date', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].sum().reset_index()
 
+# create dictionary of list
+covid_data_dict = covid_data[['Country/Region', 'Lat', 'Long']]
+list_locations = covid_data_dict.set_index('Country/Region')[['Lat', 'Long']].T.to_dict('dict')
+
 
 app = dash.Dash(__name__, meta_tags=[{"name": "viewport", "content": "width=device-width"}])
 
@@ -537,15 +541,21 @@ def update_graph(w_countries):
               [Input('w_countries', 'value')])
 def update_graph(w_countries):
     covid_data_3 = covid_data.groupby(['Lat', 'Long', 'Country/Region'])[['confirmed', 'death', 'recovered', 'active']].max().reset_index()
+    covid_data_4 = covid_data_3[covid_data_3['Country/Region'] == w_countries]
+
+    if w_countries:
+        zoom = 2
+        zoom_lat = list_locations[w_countries]['Lat']
+        zoom_lon = list_locations[w_countries]['Long']
 
     return {
         'data': [go.Scattermapbox(
-                         lon=covid_data_3['Long'],
-                         lat=covid_data_3['Lat'],
+                         lon=covid_data_4['Long'],
+                         lat=covid_data_4['Lat'],
                          mode='markers',
                          marker=go.scattermapbox.Marker(
-                                  size=covid_data_3['confirmed'] / 1500,
-                                  color=covid_data_3['confirmed'],
+                                  size=covid_data_4['confirmed'] / 1500,
+                                  color=covid_data_4['confirmed'],
                                   colorscale='hsv',
                                   showscale=False,
                                   sizemode='area',
@@ -553,13 +563,13 @@ def update_graph(w_countries):
 
                          hoverinfo='text',
                          hovertext=
-                         '<b>Country</b>: ' + covid_data_3['Country/Region'].astype(str) + '<br>' +
-                         '<b>Longitude</b>: ' + covid_data_3['Long'].astype(str) + '<br>' +
-                         '<b>Latitude</b>: ' + covid_data_3['Lat'].astype(str) + '<br>' +
-                         '<b>Confirmed</b>: ' + [f'{x:,.0f}' for x in covid_data_3['confirmed']] + '<br>' +
-                         '<b>Death</b>: ' + [f'{x:,.0f}' for x in covid_data_3['death']] + '<br>' +
-                         '<b>Recovered</b>: ' + [f'{x:,.0f}' for x in covid_data_3['recovered']] + '<br>' +
-                         '<b>Active</b>: ' + [f'{x:,.0f}' for x in covid_data_3['active']] + '<br>'
+                         '<b>Country</b>: ' + covid_data_4['Country/Region'].astype(str) + '<br>' +
+                         '<b>Longitude</b>: ' + covid_data_4['Long'].astype(str) + '<br>' +
+                         '<b>Latitude</b>: ' + covid_data_4['Lat'].astype(str) + '<br>' +
+                         '<b>Confirmed</b>: ' + [f'{x:,.0f}' for x in covid_data_4['confirmed']] + '<br>' +
+                         '<b>Death</b>: ' + [f'{x:,.0f}' for x in covid_data_4['death']] + '<br>' +
+                         '<b>Recovered</b>: ' + [f'{x:,.0f}' for x in covid_data_4['recovered']] + '<br>' +
+                         '<b>Active</b>: ' + [f'{x:,.0f}' for x in covid_data_4['active']] + '<br>'
 
                         )],
 
@@ -571,10 +581,10 @@ def update_graph(w_countries):
              hovermode='closest',
              mapbox=dict(
                 accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
-                center=go.layout.mapbox.Center(lat=36, lon=-5.4),
+                center=go.layout.mapbox.Center(lat=zoom_lat, lon=zoom_lon),
                 # style='open-street-map',
                 style='dark',
-                zoom=1.2
+                zoom=zoom
              ),
              autosize=True,
 
