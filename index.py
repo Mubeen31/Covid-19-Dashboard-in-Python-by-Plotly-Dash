@@ -213,12 +213,12 @@ app.layout = html.Div([
             html.Div([
                       dcc.Graph(id='pie_chart',
                               config={'displayModeBar': 'hover'}),
-                              ], className="create_container three columns"),
+                              ], className="create_container four columns"),
 
                     html.Div([
                         dcc.Graph(id="line_chart")
 
-                    ], className="create_container six columns"),
+                    ], className="create_container five columns"),
 
         ], className="row flex-display"),
 
@@ -476,7 +476,6 @@ def update_graph(w_countries):
 
 
         'layout': go.Layout(
-             barmode='stack',
              plot_bgcolor='#1f2c56',
              paper_bgcolor='#1f2c56',
              title={
@@ -490,7 +489,7 @@ def update_graph(w_countries):
                         'size': 20},
 
              hovermode='x',
-
+             margin = dict(r = 0),
              xaxis=dict(title='<b>Date</b>',
                         color='white',
                         showline=True,
