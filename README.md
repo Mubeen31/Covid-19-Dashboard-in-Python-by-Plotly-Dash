@@ -1,4 +1,4 @@
-# Covid-19-Dashboard-in-Python-by-Plotly-Dash
+# Covid 19 Dashboard in Python by Plotly Dash
 View on Youtube. https://www.youtube.com/watch?v=bDXypNBH1uw&amp;t=23s
 
 
