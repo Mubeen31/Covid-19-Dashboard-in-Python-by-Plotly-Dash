@@ -1,5 +1,4 @@
 # Covid 19 Dashboard in Python by Plotly Dash
-View on live server. https://plotlydashapp.herokuapp.com/
 
 <!-- View on youtube. https://www.youtube.com/watch?v=bDXypNBH1uw&t=159s -->
 
